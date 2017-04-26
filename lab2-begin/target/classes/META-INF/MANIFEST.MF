@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Vendor: Pivotal Software, Inc.
+Implementation-Title: WAFEPA
+Implementation-Version: 1.2.7.RELEASE
+Implementation-Vendor-Id: org.springframework.boot
+Build-Jdk: 1.7.0_25
+Built-By: Zeljko
+Created-By: Maven Integration for Eclipse
+
