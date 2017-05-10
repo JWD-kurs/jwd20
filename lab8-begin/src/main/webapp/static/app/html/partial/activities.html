@@ -1,0 +1,15 @@
+<div>
+	<h1>Activities</h1>
+	<div ng-controller="activitiesCtrl">
+		<input ng-model="newActivity.name"/>
+		<button ng-click="save()">save</button>
+		<ul>
+			<li ng-repeat="activity in activities">
+				{{activity.id}};{{activity.name}}
+				<button ng-click="del(activity.id)">delete</button>
+				<button ng-click="prepForUpdate(activity)">prep for update</button>
+				<button ng-click="showInNewPage(activity.id)">show in new page</button>
+			</li>
+		</ul>
+	</div>
+</div>
