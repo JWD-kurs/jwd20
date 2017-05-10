@@ -1,0 +1,13 @@
+<div ng-controller="activitiesCtrl">
+    <h1>Activnosti!</h1>
+    <table border="1">
+        <tr>
+            <th>Ime aktivnosti</th>
+        </tr>
+        <tr ng-repeat="activity in activities">
+            <td>{{activity.name}}</td>
+            <td><button ng-click="proceedToEdit(activity.id)">Izmeni</button></td>
+            <td><button ng-click="deleteActivity(activity.id)">Izbriši</button></td>
+        </tr>
+    </table>
+</div>
