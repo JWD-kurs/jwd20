@@ -18,7 +18,7 @@ public class TestData {
 
 	@PostConstruct
 	public void init(){
-		/*
+		
 	       for (int i = 1; i <= 100; i++) {
 	            User user = new User();
 	            user.setFirstName("First name " + i);
@@ -37,6 +37,6 @@ public class TestData {
 	                addressService.save(address);
 	            }
 	       }
-	    */
+	   
 	}
 }
