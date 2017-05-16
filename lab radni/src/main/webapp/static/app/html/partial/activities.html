@@ -1,0 +1,14 @@
+<div ng-controller="activitiesCtrl">
+    <h1>Activnosti!</h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Ime aktivnosti</th>
+        </tr>
+        <tr ng-repeat="activity in activities">
+            <td>{{activity.name}}</td>
+            <td><button class="btn btn-warning pull-left" ng-click="proceedToEdit(activity.id)">Izmeni</button></td>
+            <td><button class="btn btn-danger pull-left" ng-click="deleteActivity(activity.id)">
+                <span class="glyphicon glyphicon-trash"></span></button></td>
+        </tr>
+    </table>
+</div>
