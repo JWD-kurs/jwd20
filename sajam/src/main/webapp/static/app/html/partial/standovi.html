@@ -1,0 +1,69 @@
+<div ng-controller="standoviCtrl">
+
+
+    <form>
+        <div class="form-group">
+            <label for="zakupacNoviStand">Zakupac</label>
+            <input type="text" class="form-control" id="zakupacNoviStand" ng-model="noviStand.zakupac" placeholder="Zakupac">
+        </div>
+        <div class="form-group">
+            <label for="povrsinaNoviStand">Površina</label>
+            <input type="text" class="form-control" id="povrsinaNoviStand" ng-model="noviStand.povrsina" placeholder="Povrsina">
+        </div>
+        <div class="form-group">
+            <label for="sajamNoviStand">Sajam</label>
+            <select class="form-control" id="sajamNoviStand" ng-model="noviStand.sajamId">
+                <option ng-repeat="sajam in sajmovi" value="{{sajam.id}}">{{sajam.naziv}}</option>
+
+            </select>
+        </div>
+
+        <button type="button" class="btn btn-primary" ng-click="dodaj()">Dodaj</button>
+    </form>
+    <br/>
+    <br/>
+    <br/>
+
+    <form>
+        <div class="form-group">
+            <label for="zakupacTrazeniStand">Zakupac</label>
+            <input type="text" class="form-control" id="zakupacTrazeniStand" ng-model="trazeniStand.zakupac" placeholder="Zakupac">
+        </div>
+        <div class="form-group">
+            <label for="minPovrsinaTrazeniStand">Minimalna površina</label>
+            <input type="text" class="form-control" id="minPovrsinaTrazeniStand" ng-model="trazeniStand.minP" placeholder="Minimalna povrsina">
+        </div>
+        <div class="form-group">
+            <label for="maxPovrsinaTrazeniStand">Maksimalna površina</label>
+            <input type="text" class="form-control" id="maxPovrsinaTrazeniStand" ng-model="trazeniStand.maxP" placeholder="Maksimalna povrsina">
+        </div>
+
+        <button type="button" class="btn btn-primary" ng-click="trazi()">Filtriraj</button>
+    </form>
+
+    <br/>
+    <br/>
+    <br/>
+    <div class="btn-group pull-right">
+        <button class="btn btn-primary" ng-click="nazad()" ng-disabled="pageNum==0">Prethodna</button>
+        <button class="btn btn-primary" ng-click="napred()" ng-disabled="pageNum == totalPages - 1">Sledeća</button>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th>Zakupac</th>
+            <th>Povrsina</th>
+            <th>Sajam</th>
+        </tr>
+        <tr ng-repeat="stand in standovi">
+            <td>{{stand.id}}</td>
+            <td>{{stand.zakupac}}</td>
+            <td>{{stand.povrsina}}</td>
+            <td>{{stand.sajamNaziv}}</td>
+            <td>
+                <button class="btn btn-danger">Obriši</button>
+                <button class="btn btn-warning" ng-click="izmeni(stand.id)">Izmeni</button>
+            </td>
+        </tr>
+    </table>
+</div>

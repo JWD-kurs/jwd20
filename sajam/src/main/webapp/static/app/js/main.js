@@ -1,126 +1,166 @@
+var sajamApp = angular.module("sajamApp", ['ngRoute']);
 
-var app = angular.module("wafepa", ['ngRoute']);
-
-app.controller("addActivityCtrl",function ($scope, $http, $location) {
-    $scope.url_base = "api/activities";
-
-    $scope.activity = {};
-    $scope.activity.name = "";
-
-    $scope.add = function () {
-        $http.post($scope.url_base, $scope.activity).then(
-            function success(data) {
-                alert("Uspesno je dodata aktivnost u bazu!");
-                console.log(data.data);
-                $location.path('/activities');
-            }
-        );
-    }
-});
-
-
-app.controller("activitiesCtrl", function ($scope, $http, $location) {
-
-    $scope.searchActivity = {};
-    $scope.searchActivity.name = "";
-    $scope.url_base = "api/activities";
-    $scope.activities = null;
-
-    $scope.page = 0;
-    $scope.num_pages = 0;
-
-    $scope.search = function () {
-        $scope.page = 0;
-        getActivities();
-    }
-
-    $scope.back = function () {
-        $scope.page = $scope.page - 1;
-        getActivities();
-    }
-
-    $scope.forward = function () {
-        $scope.page = $scope.page + 1;
-        getActivities();
-    }
-
-    var getActivities = function () {
-        var config = { params : {}};
-        if($scope.searchActivity.name != ""){
-            config.params.name = $scope.searchActivity.name;
-        }
-
-        if($scope.page != 0){
-            config.params.page = $scope.page;
-        }
-
-        $http.get($scope.url_base, config).then(
-            function successCallBack(data, status){
-                $scope.activities = data.data;
-                $scope.num_pages = data.headers("pages");
-            }
-        )
-    }
-
-    getActivities();
-
-    $scope.proceedToEdit = function(id){
-        $location.path("/activities/edit/" + id);
-    }
-    
-    $scope.deleteActivity = function (id) {
-        $http.delete($scope.url_base + "/" + id).then(
-            function successCallback(data) {
-                alert("Uspesno je izbrisan korisnik sa id:" + data.data.id);
-                getActivities();
-            }
-        );
-    }
-});
-
-app.controller("editActivityCtrl", function ($scope, $http, $routeParams, $location) {
-    $scope.base_url = "/api/activities";
-    $scope.activity = null;
-
-    console.log($routeParams);
-
-    var getActivity = function () {
-        $http.get($scope.base_url + "/" + $routeParams.id).
-            then(function successCallback(data, status) {
-                console.log(data.data);
-                $scope.activity = data.data;
-            }, function errorCallback(data, status) {
-                alert("Nije uspelo dovlacenje");
-                console.log(data);
-            });
-    }
-
-    getActivity();
-
-    $scope.edit = function () {
-        alert("Editovanje!");
-        $http.put($scope.base_url + "/" + $scope.activity.id, $scope.activity).
-            then(function successCallback(data, status) {
-                alert("Uspesna izmena!");
-                $location.path('/activities');
-            }, function errorCallback(data, status) {
-                alert("Doslo je do greske");
-                console.log(status);
-            });
-
-    };
-})
-
-app.config(['$routeProvider', function ($routeProvider) {
+sajamApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/',{
-        templateUrl: '/static/app/html/partial/home.html'
-    }).when('/activities',{
-        templateUrl: '/static/app/html/partial/activities.html'
-    }).when('/activities/edit/:id',{
-        templateUrl: '/static/app/html/partial/edit-activity.html'
-    }).when('/activities/add',{
-        templateUrl: '/static/app/html/partial/add-activity.html'
+        templateUrl: '/static/app/html/partial/standovi.html'
+    }).when('/standovi/edit/:id',{
+        templateUrl: '/static/app/html/partial/edit-stand.html'
     }).otherwise({
         redirectTo: '/'
     });
 }]);
+
+sajamApp.controller("standoviCtrl", function($scope, $http, $location){
+
+    $scope.base_url_standovi = "/api/standovi";
+    $scope.base_url_sajmovi = "/api/sajmovi";
+
+
+    $scope.pageNum = 0;
+    $scope.totalPages = 0;
+
+    $scope.sajmovi = [];
+    $scope.standovi = [];
+
+    $scope.noviStand = {};
+    $scope.noviStand.zakupac = "";
+    $scope.noviStand.povrisna = "";
+    $scope.noviStand.sajamId = "";
+
+
+    $scope.trazeniStand = {};
+    $scope.trazeniStand.zakupac = "";
+    $scope.trazeniStand.minP = "";
+    $scope.trazeniStand.maxP = "";
+
+    var getStandovi = function(){
+
+        var config = {params: {}};
+
+        config.params.pageNum = $scope.pageNum;
+
+        if($scope.trazeniStand.zakupac != ""){
+            config.params.zakupac = $scope.trazeniStand.zakupac;
+        }
+
+        if($scope.trazeniStand.minP != ""){
+            config.params.minP = $scope.trazeniStand.minP;
+        }
+
+        if($scope.trazeniStand.maxP != ""){
+            config.params.maxP = $scope.trazeniStand.maxP;
+        }
+
+
+        $http.get($scope.base_url_standovi, config)
+            .then(function success(data){
+                console.log(data.data);
+                $scope.standovi = data.data;
+                $scope.totalPages = data.headers('totalPages');
+                //alert("Radi dobavljanje standova");
+
+            });
+    };
+
+    var getSajmovi = function(){
+
+        $http.get($scope.base_url_sajmovi)
+            .then(function success(data){
+                $scope.sajmovi = data.data;
+                console.log(data.data);
+                //alert("Uspesno dobavljeni sajmovi");
+            });
+
+    };
+
+    getStandovi();
+    getSajmovi();
+
+    $scope.nazad = function(){
+        if($scope.pageNum > 0) {
+            $scope.pageNum = $scope.pageNum - 1;
+            getStandovi();
+        }
+    };
+
+    $scope.napred = function(){
+        if($scope.pageNum < $scope.totalPages - 1){
+            $scope.pageNum = $scope.pageNum + 1;
+            getStandovi();
+        }
+    };
+
+    $scope.dodaj = function(){
+        $http.post($scope.base_url_standovi, $scope.noviStand)
+            .then(function success(data){
+                console.log(data.data);
+                alert("Uspesno dodat štand u bazu.");
+                getStandovi();
+            });
+    };
+
+    $scope.trazi = function () {
+        $scope.pageNum = 0;
+        getStandovi();
+    }
+
+    $scope.izmeni = function(id){
+        $location.path('/standovi/edit/' + id);
+    }
+});
+
+sajamApp.controller("editStandCtrl", function($scope, $http, $routeParams, $location){
+
+    $scope.base_url_standovi = "/api/standovi";
+    $scope.base_url_sajmovi = "/api/sajmovi";
+
+    $scope.sajmovi = [];
+
+    $scope.stariStand = null;
+
+    var getStariStand = function(){
+
+        $http.get($scope.base_url_standovi + "/" + $routeParams.id)
+            .then(function success(data){
+               $scope.stariStand = data.data;
+                
+                alert(data.data.sajamId + " je id sajma za ovaj stand");
+            });
+
+    }
+
+    var getSajmovi = function(){
+
+        $http.get($scope.base_url_sajmovi)
+            .then(function success(data){
+                $scope.sajmovi = data.data;
+                console.log(data.data);
+                alert("Dobavio sam sajmove!");
+                getStariStand();//Ispravio sam, i sada se odavde poziva! Da bih bio siguran da postoje sajmovi pre nego sto se izvrse provere u ng-selected!
+            });
+
+    };
+
+    getSajmovi();
+    
+    
+    $scope.izmeni = function(){
+        $http.put($scope.base_url_standovi + "/" + $scope.stariStand.id, $scope.stariStand)
+            .then(function success(data){
+                alert("Uspešno izmenjen objekat!");
+                $location.path("/");
+            });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
